@@ -3,7 +3,7 @@
 #let MainPageSettings(doc
   ) = {
 
-  let PAR_INDENT = 15pt
+  let PAR_INDENT = 0pt
   let TOP_PAGE_MARING = 40mm
   let TITLE_SIZE = 14pt
 
@@ -28,7 +28,7 @@
   // show par: set block(spacing: 0.4em)
 
   // PAGE CONFIG
-  set page(paper: "us-letter")
+  set page(paper: "a4")
   set page(margin: (left: 44mm, right: 44mm, top: TOP_PAGE_MARING, bottom: 45mm))
 
 // Set headers and page numbering
@@ -57,7 +57,6 @@
     if it.body == [References] {
       [References]
       set heading(numbering: none)
-
     } 
     else if it.body == [Acknowledgements] {
       [Acknowledgements]
@@ -84,11 +83,25 @@
       set heading(numbering: none)
     }
     else {
-
       if it.level == 1 {
         set text(15pt, weight: "bold")
         set align(left)
-        it
+        show heading.where(level: 1): it => {
+          if it.body != text("Inhaltsverzeichnis") {  // Text comparison
+            grid(
+              align: bottom,  // Align content to bottom of grid row
+              columns: (6fr, 4fr),
+              row-gutter: 1.5em,  // Vertical spacing
+              [Chapter #counter(heading).display()],  // Left top column
+              [], // Empty column
+              [#it.body],// bottom column
+              // Adding spacing between header and text.
+              [#linebreak()],
+              [#linebreak()],
+            )
+          }
+        }
+      it
       } else if it.level == 2 {
           set text(10pt, weight: "bold")
           it
@@ -101,12 +114,11 @@
           //[#v(1.5em)#h(PAR_INDENT)#it.body]
       }
     }
-
-
-
   }
 
-   set super(size: 8pt)
+
+
+  set super(size: 8pt)
 
   let is_long_caption = false
 
